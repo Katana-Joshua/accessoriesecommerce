@@ -1,0 +1,25 @@
+{
+  "name": "ecommerce-backend",
+  "version": "1.0.0",
+  "description": "Ecommerce backend API",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "init-db": "node database/init.js",
+    "seed-admin": "node database/seed-admin.js",
+    "migrate-categories": "node database/migrate-categories.js",
+    "fix-categories": "node database/fix-categories.js",
+    "migrate-images": "node database/migrate-images-to-blob.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.2",
+    "mysql2": "^3.6.5"
+  }
+}
