@@ -6,7 +6,7 @@ const router = express.Router();
 // POST create new order
 router.post('/', async (req, res) => {
   try {
-    const { items, total } = req.body; // items: [{ productId, quantity, price }]
+    const { items, total, customerName, customerEmail, customerContact } = req.body;
     
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: 'Order items are required' });
@@ -15,16 +15,33 @@ router.post('/', async (req, res) => {
     if (!total || total <= 0) {
       return res.status(400).json({ error: 'Valid total is required' });
     }
+
+    // Validate customer information
+    if (!customerName || !customerName.trim()) {
+      return res.status(400).json({ error: 'Customer name is required' });
+    }
+    if (!customerEmail || !customerEmail.trim()) {
+      return res.status(400).json({ error: 'Customer email is required' });
+    }
+    if (!customerContact || !customerContact.trim()) {
+      return res.status(400).json({ error: 'Customer contact is required' });
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(customerEmail)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
     
     // Start transaction
     const connection = await db.getConnection();
     await connection.beginTransaction();
     
     try {
-      // Create order
+      // Create order with customer information
       const [orderResult] = await connection.execute(
-        'INSERT INTO orders (total, status) VALUES (?, ?)',
-        [total, 'pending']
+        'INSERT INTO orders (total, status, customerName, customerEmail, customerContact) VALUES (?, ?, ?, ?, ?)',
+        [total, 'pending', customerName.trim(), customerEmail.trim(), customerContact.trim()]
       );
       
       const orderId = orderResult.insertId;

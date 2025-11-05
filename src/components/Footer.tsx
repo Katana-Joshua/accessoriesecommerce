@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-300">
@@ -6,9 +8,9 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">E</span>
+                <span className="text-white font-bold text-lg">GA</span>
               </div>
-              <span className="text-xl font-bold text-white">ElectroStore</span>
+              <span className="text-xl font-bold text-white">Gadget Arena</span>
             </div>
             <p className="text-gray-400 leading-relaxed">
               Your trusted destination for premium electronics and cutting-edge technology.
@@ -18,37 +20,35 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-semibold mb-4">Shop</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="hover:text-white transition-colors">All Products</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Best Sellers</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">New Arrivals</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Sale</a></li>
+              <li><Link to="/products" className="hover:text-white transition-colors">All Products</Link></li>
+              <li><Link to="/categories" className="hover:text-white transition-colors">Categories</Link></li>
+              <li><Link to="/" className="hover:text-white transition-colors">Featured</Link></li>
             </ul>
           </div>
 
           <div>
             <h3 className="text-white font-semibold mb-4">Support</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Shipping Info</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Returns</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">FAQ</a></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
+              <li><a href="/contact" className="hover:text-white transition-colors">Shipping Info</a></li>
+              <li><a href="/contact" className="hover:text-white transition-colors">Returns</a></li>
+              <li><a href="/contact" className="hover:text-white transition-colors">FAQ</a></li>
             </ul>
           </div>
 
           <div>
             <h3 className="text-white font-semibold mb-4">Company</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">About Us</Link></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8 text-center">
           <p className="text-gray-400">
-            © 2025 ElectroStore. All rights reserved.
+            © 2025 Gadget Arena. All rights reserved.
           </p>
         </div>
       </div>

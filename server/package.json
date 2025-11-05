@@ -8,10 +8,11 @@
     "start": "node index.js",
     "dev": "node --watch index.js",
     "init-db": "node database/init.js",
-    "seed-admin": "node database/seed-admin.js",
-    "migrate-categories": "node database/migrate-categories.js",
-    "fix-categories": "node database/fix-categories.js",
-    "migrate-images": "node database/migrate-images-to-blob.js"
+          "seed-admin": "node database/seed-admin.js",
+          "migrate-categories": "node database/migrate-categories.js",
+          "fix-categories": "node database/fix-categories.js",
+          "migrate-images": "node database/migrate-images-to-blob.js",
+          "migrate-customer-info": "node database/add-customer-info-to-orders.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

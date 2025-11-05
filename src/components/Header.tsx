@@ -1,5 +1,5 @@
 import { ShoppingCart, Search, Menu, Plus, LogOut, LogIn } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -13,8 +13,16 @@ export default function Header({ onCartClick, onAdminClick }: HeaderProps) {
   const { getCartCount } = useCart();
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const cartCount = getCartCount();
   const isAdmin = isAuthenticated && user?.role === 'admin';
+
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(path);
+  };
 
   const handleLogout = () => {
     logout();
@@ -32,23 +40,66 @@ export default function Header({ onCartClick, onAdminClick }: HeaderProps) {
   return (
     <header className="absolute top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-8">
+        <div className="flex items-center justify-between h-20">
+          <div className="flex items-center">
             <button className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
               <Menu className="w-6 h-6 text-gray-700" />
             </button>
-            <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
               <img 
                 src="/images/logo.png" 
                 alt="GadgetArena Logo" 
-                className="h-10 w-auto"
+                className="h-16 w-auto"
               />
             </Link>
-            <nav className="hidden lg:flex gap-6">
-              <a href="#products" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Products</a>
-              <a href="#categories" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Categories</a>
-            </nav>
           </div>
+
+          <nav className="hidden lg:flex gap-8 absolute left-1/2 transform -translate-x-1/2">
+            <Link 
+              to="/" 
+              className={`font-medium transition-colors relative group ${
+                isActive('/') ? 'text-orange-500' : 'text-gray-700 hover:text-orange-500'
+              }`}
+            >
+              Home
+              <span className={`absolute bottom-0 left-0 h-0.5 bg-orange-500 transition-all duration-300 ${
+                isActive('/') ? 'w-full' : 'w-0 group-hover:w-full'
+              }`}></span>
+            </Link>
+            <Link 
+              to="/products" 
+              className={`font-medium transition-colors relative group ${
+                isActive('/products') ? 'text-orange-500' : 'text-gray-700 hover:text-orange-500'
+              }`}
+            >
+              Products
+              <span className={`absolute bottom-0 left-0 h-0.5 bg-orange-500 transition-all duration-300 ${
+                isActive('/products') ? 'w-full' : 'w-0 group-hover:w-full'
+              }`}></span>
+            </Link>
+            <Link 
+              to="/categories" 
+              className={`font-medium transition-colors relative group ${
+                isActive('/categories') ? 'text-orange-500' : 'text-gray-700 hover:text-orange-500'
+              }`}
+            >
+              Categories
+              <span className={`absolute bottom-0 left-0 h-0.5 bg-orange-500 transition-all duration-300 ${
+                isActive('/categories') ? 'w-full' : 'w-0 group-hover:w-full'
+              }`}></span>
+            </Link>
+            <Link 
+              to="/contact" 
+              className={`font-medium transition-colors relative group ${
+                isActive('/contact') ? 'text-orange-500' : 'text-gray-700 hover:text-orange-500'
+              }`}
+            >
+              Contact
+              <span className={`absolute bottom-0 left-0 h-0.5 bg-orange-500 transition-all duration-300 ${
+                isActive('/contact') ? 'w-full' : 'w-0 group-hover:w-full'
+              }`}></span>
+            </Link>
+          </nav>
 
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center bg-gray-100 rounded-lg px-4 py-2 w-80">

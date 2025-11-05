@@ -86,10 +86,10 @@ export default function ProductDetail() {
         {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 hover:border-gray-400 mb-6 transition-all shadow-sm hover:shadow-md"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span>Back</span>
+          <span className="font-medium">Back</span>
         </button>
 
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">

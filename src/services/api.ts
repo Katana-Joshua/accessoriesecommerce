@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { Product, Category } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+// In production (Railway), use relative path since frontend and backend are on same domain
+// In development, use explicit localhost URL or VITE_API_URL from env
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.PROD ? '/api' : 'http://localhost:3000/api');
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -136,7 +139,13 @@ export const cartAPI = {
 
 // Orders API
 export const ordersAPI = {
-  create: async (order: { items: { productId: number; quantity: number; price: number }[]; total: number }) => {
+  create: async (order: { 
+    items: { productId: number; quantity: number; price: number }[]; 
+    total: number;
+    customerName: string;
+    customerEmail: string;
+    customerContact: string;
+  }) => {
     const response = await api.post('/orders', order);
     return response.data;
   },
