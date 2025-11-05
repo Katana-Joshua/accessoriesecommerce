@@ -11,10 +11,13 @@ import productRoutes from './routes/products.js';
 import cartRoutes from './routes/cart.js';
 import orderRoutes from './routes/orders.js';
 
-dotenv.config();
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Load environment variables from root .env file
+// Path: project-root/.env (one level up from server directory)
+const rootEnvPath = path.join(__dirname, '..', '.env');
+dotenv.config({ path: rootEnvPath });
 
 const app = express();
 const PORT = process.env.PORT || 3000;
