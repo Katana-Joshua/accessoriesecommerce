@@ -1,4 +1,5 @@
-import { ShoppingCart, Search, Menu, Plus, LogOut, LogIn } from 'lucide-react';
+import { useState } from 'react';
+import { ShoppingCart, Search, Menu, Plus, LogOut, LogIn, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -16,6 +17,8 @@ export default function Header({ onCartClick, onAdminClick }: HeaderProps) {
   const location = useLocation();
   const cartCount = getCartCount();
   const isAdmin = isAuthenticated && user?.role === 'admin';
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const isActive = (path: string) => {
     if (path === '/') {
@@ -35,6 +38,19 @@ export default function Header({ onCartClick, onAdminClick }: HeaderProps) {
     } else {
       navigate('/login');
     }
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+      setIsSearchOpen(false);
+      setSearchQuery('');
+    }
+  };
+
+  const handleSearchIconClick = () => {
+    setIsSearchOpen(true);
   };
 
   return (
@@ -110,7 +126,11 @@ export default function Header({ onCartClick, onAdminClick }: HeaderProps) {
                 className="bg-transparent border-none outline-none ml-2 w-full text-gray-700"
               />
             </div>
-            <button className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <button 
+              onClick={handleSearchIconClick}
+              className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Search"
+            >
               <Search className="w-6 h-6 text-gray-700" />
             </button>
             {onAdminClick && isAdmin && (
@@ -160,6 +180,54 @@ export default function Header({ onCartClick, onAdminClick }: HeaderProps) {
           </div>
         </div>
       </div>
+
+      {/* Mobile Search Popup */}
+      {isSearchOpen && (
+        <div 
+          className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm md:hidden"
+          onClick={() => {
+            setIsSearchOpen(false);
+            setSearchQuery('');
+          }}
+        >
+          <div 
+            className="bg-white w-full p-4 shadow-lg mt-20"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <form onSubmit={handleSearchSubmit} className="flex-1 flex items-center gap-3">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    autoFocus
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                >
+                  Search
+                </button>
+              </form>
+              <button
+                onClick={() => {
+                  setIsSearchOpen(false);
+                  setSearchQuery('');
+                }}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Close search"
+              >
+                <X className="w-6 h-6 text-gray-700" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

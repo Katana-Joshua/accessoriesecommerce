@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
@@ -8,6 +9,7 @@ import { Product, Category } from '../types';
 import { Search, Filter } from 'lucide-react';
 
 export default function ProductsPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -34,6 +36,14 @@ export default function ProductsPage() {
 
     fetchData();
   }, []);
+
+  // Initialize search query from URL params
+  useEffect(() => {
+    const searchParam = searchParams.get('search');
+    if (searchParam) {
+      setSearchQuery(searchParam);
+    }
+  }, [searchParams]);
 
   const filteredProducts = products.filter(product => {
     const matchesCategory = selectedCategory === null || product.categoryId === selectedCategory;

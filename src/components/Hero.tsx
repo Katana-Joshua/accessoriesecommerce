@@ -32,7 +32,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden text-white">
+    <section className="relative h-screen flex items-center justify-center overflow-hidden text-white">
       {/* Background Image Carousel */}
       <div className="absolute inset-0">
         {carouselImages.map((image, index) => (
@@ -95,29 +95,24 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center max-w-4xl mx-auto">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-8 animate-fade-in">
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6 animate-fade-in">
             <Zap className="w-4 h-4 text-orange-400 animate-pulse" />
             <span className="text-sm font-medium">New Arrivals Every Week</span>
           </div>
 
           {/* Main heading */}
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold mb-6 leading-tight animate-slide-up">
-            Latest Electronics at
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 leading-tight animate-slide-up">
+            Latest Electronics
             <span className="block text-orange-400">
               Unbeatable Prices
             </span>
           </h1>
 
-          {/* Subtitle */}
-          <p className="text-xl md:text-2xl lg:text-3xl text-blue-100 mb-12 leading-relaxed max-w-3xl mx-auto">
-            Discover cutting-edge technology and premium gadgets for your digital lifestyle
-          </p>
-
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 animate-slide-up-delay">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8 animate-slide-up-delay">
             <button
               onClick={() => navigate('/products')}
               className="group bg-white text-blue-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all transform hover:scale-105 shadow-2xl flex items-center gap-2"
