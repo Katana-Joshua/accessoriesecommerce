@@ -1,10 +1,33 @@
 import axios from 'axios';
 import { Product, Category } from '../types';
 
+// Determine API base URL
 // In production (Railway), use relative path since frontend and backend are on same domain
 // In development, use explicit localhost URL or VITE_API_URL from env
-const API_BASE_URL = import.meta.env.VITE_API_URL || 
-  (import.meta.env.PROD ? '/api' : 'http://localhost:3000/api');
+let API_BASE_URL: string;
+
+if (import.meta.env.VITE_API_URL) {
+  // If VITE_API_URL is provided, use it but ensure HTTPS if page is HTTPS
+  let providedUrl = import.meta.env.VITE_API_URL.trim();
+  
+  // Remove trailing slash if present
+  if (providedUrl.endsWith('/')) {
+    providedUrl = providedUrl.slice(0, -1);
+  }
+  
+  if (typeof window !== 'undefined' && window.location.protocol === 'https:' && providedUrl.startsWith('http://')) {
+    // Convert HTTP to HTTPS to avoid mixed content errors
+    API_BASE_URL = providedUrl.replace('http://', 'https://');
+  } else {
+    API_BASE_URL = providedUrl;
+  }
+} else if (import.meta.env.PROD) {
+  // In production, use relative path (works with same-domain deployment)
+  API_BASE_URL = '/api';
+} else {
+  // Development: use localhost
+  API_BASE_URL = 'http://localhost:3000/api';
+}
 
 const api = axios.create({
   baseURL: API_BASE_URL,
