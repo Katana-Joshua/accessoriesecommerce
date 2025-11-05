@@ -96,12 +96,23 @@ export default function AdminDashboard() {
   const handleDeleteCategory = async (id: number) => {
     if (!window.confirm('Are you sure you want to delete this category?')) return;
     try {
-      await categoriesAPI.delete(id);
-      setCategories(categories.filter(c => c.id !== id));
+      // Ensure ID is a valid number
+      const categoryId = typeof id === 'number' ? id : parseInt(id.toString().split(':')[0], 10);
+      if (isNaN(categoryId)) {
+        alert('Invalid category ID');
+        return;
+      }
+      
+      await categoriesAPI.delete(categoryId);
+      setCategories(categories.filter(c => {
+        const cId = typeof c.id === 'number' ? c.id : parseInt(c.id.toString().split(':')[0], 10);
+        return cId !== categoryId;
+      }));
       fetchData(); // Refresh data
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting category:', error);
-      alert('Failed to delete category');
+      const errorMessage = error.response?.data?.error || 'Failed to delete category';
+      alert(errorMessage);
     }
   };
 

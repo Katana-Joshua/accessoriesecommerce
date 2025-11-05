@@ -158,10 +158,19 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     
+    // Parse and validate ID - extract just the numeric part if there's any suffix
+    const categoryId = parseInt(id.toString().split(':')[0], 10);
+    
+    if (isNaN(categoryId) || categoryId <= 0) {
+      return res.status(400).json({ 
+        error: 'Invalid category ID' 
+      });
+    }
+    
     // Check if category has products
     const [products] = await db.execute(
       'SELECT COUNT(*) as count FROM products WHERE categoryId = ?',
-      [id]
+      [categoryId]
     );
     
     if (products[0].count > 0) {
@@ -172,7 +181,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
     
     const [result] = await db.execute(
       'DELETE FROM categories WHERE id = ?',
-      [id]
+      [categoryId]
     );
     
     if (result.affectedRows === 0) {
