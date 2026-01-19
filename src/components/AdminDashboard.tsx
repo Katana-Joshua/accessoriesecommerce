@@ -15,6 +15,7 @@ export default function AdminDashboard() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [ordersLoading, setOrdersLoading] = useState(true);
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
   const [adminPanelTab, setAdminPanelTab] = useState<'product' | 'category'>('product');
   const [stats, setStats] = useState({
@@ -36,30 +37,26 @@ export default function AdminDashboard() {
       return;
     }
 
-    // User is admin, fetch data
+    // User is admin, fetch core data and then orders
     fetchData();
+    fetchOrders();
   }, [user, authLoading, navigate]);
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [productsData, categoriesData, ordersData] = await Promise.all([
+      const [productsData, categoriesData] = await Promise.all([
         productsAPI.getAll(),
         categoriesAPI.getAll(),
-        ordersAPI.getAll().catch(() => []), // Orders might not exist yet
       ]);
 
       setProducts(productsData);
       setCategories(categoriesData);
-      setOrders(ordersData || []);
-
-      // Calculate stats
-      const revenue = ordersData?.reduce((sum: number, order: any) => sum + (order.total || 0), 0) || 0;
       setStats({
         totalProducts: productsData.length,
         totalCategories: categoriesData.length,
-        totalOrders: ordersData?.length || 0,
-        totalRevenue: revenue,
+        totalOrders: 0,
+        totalRevenue: 0,
       });
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -68,12 +65,35 @@ export default function AdminDashboard() {
     }
   };
 
+  const fetchOrders = async () => {
+    try {
+      setOrdersLoading(true);
+      const ordersData = await ordersAPI.getAll().catch(() => []);
+      const safeOrders = ordersData || [];
+      setOrders(safeOrders);
+
+      const revenue =
+        safeOrders.reduce((sum: number, order: any) => sum + (order.total || 0), 0) || 0;
+
+      setStats(prev => ({
+        ...prev,
+        totalOrders: safeOrders.length,
+        totalRevenue: revenue,
+      }));
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    } finally {
+      setOrdersLoading(false);
+    }
+  };
+
   const handleProductAdded = () => {
-    fetchData(); // Refresh data after adding product
+    fetchData(); // Refresh products/categories after adding product
+    fetchOrders(); // Also refresh orders stats
   };
 
   const handleCategoryAdded = () => {
-    fetchData(); // Refresh data after adding category
+    fetchData(); // Refresh categories after adding category
   };
 
   const handleLogout = () => {
@@ -86,7 +106,8 @@ export default function AdminDashboard() {
     try {
       await productsAPI.delete(id);
       setProducts(products.filter(p => p.id !== id));
-      fetchData(); // Refresh data
+      fetchData(); // Refresh products/categories
+      fetchOrders(); // Refresh stats that may depend on products in orders
     } catch (error) {
       console.error('Error deleting product:', error);
       alert('Failed to delete product');
@@ -97,18 +118,15 @@ export default function AdminDashboard() {
     if (!window.confirm('Are you sure you want to delete this category?')) return;
     try {
       // Ensure ID is a valid number
-      const categoryId = typeof id === 'number' ? id : parseInt(id.toString().split(':')[0], 10);
+      const categoryId = id;
       if (isNaN(categoryId)) {
         alert('Invalid category ID');
         return;
       }
       
       await categoriesAPI.delete(categoryId);
-      setCategories(categories.filter(c => {
-        const cId = typeof c.id === 'number' ? c.id : parseInt(c.id.toString().split(':')[0], 10);
-        return cId !== categoryId;
-      }));
-      fetchData(); // Refresh data
+      setCategories(categories.filter(c => c.id !== categoryId));
+      fetchData(); // Refresh categories
     } catch (error: any) {
       console.error('Error deleting category:', error);
       const errorMessage = error.response?.data?.error || 'Failed to delete category';
@@ -396,7 +414,11 @@ export default function AdminDashboard() {
           {activeTab === 'orders' && (
             <div className="space-y-4 sm:space-y-6">
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Orders</h2>
-              {orders.length === 0 ? (
+              {ordersLoading ? (
+                <div className="flex items-center justify-center py-10">
+                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+                </div>
+              ) : orders.length === 0 ? (
                 <p className="text-gray-500 text-center py-8">No orders yet</p>
               ) : (
                 <div className="space-y-3 sm:space-y-4">

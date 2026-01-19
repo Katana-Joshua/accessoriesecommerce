@@ -100,8 +100,7 @@ router.get('/', async (req, res) => {
            'price', oi.price,
            'product', JSON_OBJECT(
              'id', p.id,
-             'name', p.name,
-             'image', p.image
+             'name', p.name
            )
          )
        ) as items
@@ -134,8 +133,7 @@ router.get('/:id', async (req, res) => {
            'price', oi.price,
            'product', JSON_OBJECT(
              'id', p.id,
-             'name', p.name,
-             'image', p.image
+             'name', p.name
            )
          )
        ) as items

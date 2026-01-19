@@ -12,14 +12,15 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden border border-gray-200 hover:shadow-xl hover:border-orange-200 transition-all duration-300 group transform hover:-translate-y-1">
+    <div className="product-card bg-white/95 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-200 group">
       <Link to={`/product/${product.id}`} className="block">
         <div className="relative overflow-hidden aspect-square">
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            className="product-image-tilt w-full h-full object-cover"
           />
+          <div className="product-glow" />
           {!product.inStock && (
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
               <span className="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold">
