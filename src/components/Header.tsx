@@ -19,6 +19,7 @@ export default function Header({ onCartClick, onAdminClick }: HeaderProps) {
   const isAdmin = isAuthenticated && user?.role === 'admin';
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isActive = (path: string) => {
     if (path === '/') {
@@ -58,9 +59,6 @@ export default function Header({ onCartClick, onAdminClick }: HeaderProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
-            <button className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <Menu className="w-6 h-6 text-gray-700" />
-            </button>
             <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
               <img 
                 src="/images/logo.png" 
@@ -177,9 +175,107 @@ export default function Header({ onCartClick, onAdminClick }: HeaderProps) {
                 </span>
               )}
             </button>
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6 text-gray-700" />
+              ) : (
+                <Menu className="w-6 h-6 text-gray-700" />
+              )}
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-gray-200 shadow-lg">
+          <nav className="flex flex-col px-4 py-4 space-y-3">
+            <Link
+              to="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`px-4 py-3 rounded-lg font-medium transition-colors ${
+                isActive('/') ? 'bg-orange-50 text-orange-500' : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              Home
+            </Link>
+            <Link
+              to="/products"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`px-4 py-3 rounded-lg font-medium transition-colors ${
+                isActive('/products') ? 'bg-orange-50 text-orange-500' : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              Products
+            </Link>
+            <Link
+              to="/categories"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`px-4 py-3 rounded-lg font-medium transition-colors ${
+                isActive('/categories') ? 'bg-orange-50 text-orange-500' : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              Categories
+            </Link>
+            <Link
+              to="/contact"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`px-4 py-3 rounded-lg font-medium transition-colors ${
+                isActive('/contact') ? 'bg-orange-50 text-orange-500' : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              Contact
+            </Link>
+            {isAuthenticated && (
+              <div className="border-t border-gray-200 pt-3 mt-3">
+                <div className="px-4 py-2 text-sm text-gray-600">
+                  {user?.username || 'User'}
+                  {user?.role === 'admin' && (
+                    <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">Admin</span>
+                  )}
+                </div>
+                {user?.role === 'admin' && (
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      handleAdminClick();
+                    }}
+                    className="w-full text-left px-4 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
+                    Admin Dashboard
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full text-left px-4 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
+                >
+                  <LogOut className="w-5 h-5" />
+                  Logout
+                </button>
+              </div>
+            )}
+            {!isAuthenticated && (
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  navigate('/login');
+                }}
+                className="w-full text-left px-4 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
+              >
+                <LogIn className="w-5 h-5" />
+                Login
+              </button>
+            )}
+          </nav>
+        </div>
+      )}
 
       {/* Mobile Search Popup */}
       {isSearchOpen && (
